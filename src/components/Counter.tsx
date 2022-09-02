@@ -3,23 +3,35 @@ import {Button} from "./Button";
 import '../App.css'
 
 type CounterType = {
-    count: number
-    minCount:number
-    maxCount:number
-    onClickAddCountHandler: () => void
-    onClickResetCountHandler: () => void
+    error:string
+    value: number
+    startValue:number
+    maxValue:number
+    addValueHandler:()=>void
+    resetValueHandler:()=>void
+
 }
 
 export const Counter = (props: CounterType) => {
 
-    const color = props.count === props.maxCount && 'soreColorMax';
+    // console.log(props.error)
+
+
+    const color = props.value === props.maxValue && 'soreColorMax';
+    const error = props.error !== '' || props.value === props.maxValue  ? 'error' : '';
+    const onClickIncHandler = () => {
+        props.addValueHandler();
+    }
+
+    // const !props.error ? 'enter value and press "set"' : props.error
 
     return (
         <div>
-            <div className={`scoreboard ` + color}>{props.count}</div>
+            <div className={`scoreboard `}>{props.value}</div>
+            <div>{props.error}</div>
             <div className={'buttons'}>
-                <Button name={'inc'} callback={props.onClickAddCountHandler} disabled={props.count === props.maxCount}/>
-                <Button name={'reset'} callback={props.onClickResetCountHandler} disabled={props.count === props.minCount}/>
+                <Button name={'inc'} callback={onClickIncHandler} />
+                <Button name={'reset'} callback={props.resetValueHandler} />
             </div>
         </div>
 

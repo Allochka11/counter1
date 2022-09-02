@@ -9,7 +9,6 @@ type ButtonType = {
 
 export const Button = (props: ButtonType) => {
 
-
     function onClickButton() {
         props.callback();
     }

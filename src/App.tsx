@@ -2,59 +2,93 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Counter} from "./components/Counter";
 import {Button} from "./components/Button";
+import {CounterValue} from "./components/CounterValue";
 
 function App() {
+    const [value, setValue] = useState<number>(0);
+    const [startValue, setStartValue] = useState<number>(0);
+    const [maxValue, setMaxValue] = useState<number>(5);
+    const [error, setError] = useState<string>('');
 
-    // const maxCount = 5;
-    // const minCount = 0;
-    //
-    // const [count, setCounter] = useState<number>(minCount);
-    //
-    // const onClickAddCountHandler = () => {
-    //     if(count >= maxCount ) return
-    //     setCounter(count + 1);
-    // }
-    //
-    // const onClickResetCountHandler = () => {
-    //     setCounter(minCount)
-    // }
-
-    const [value, setValue] = useState<number>(0)
-
-    useEffect(() => {
-        let newValueString = localStorage.getItem('counterValue');
-        if (newValueString) {
-            let newValue = JSON.parse(newValueString);
+    useEffect(()=>{
+        let valueAsString = localStorage.getItem('counterValue');
+        if(valueAsString) {
+            let newValue = JSON.parse(valueAsString)
             setValue(newValue)
         }
-    }, []);
+    },[]); // по загрузке
+    useEffect(()=>{
+       localStorage.setItem('counterValue', JSON.stringify(value))
+    },[value]);//при изменении value
 
-    useEffect(() => {
-        localStorage.setItem('counterValue', JSON.stringify(value));
-    }, [value]);
+    // useEffect(()=>{
+    //     let startValueAsString = localStorage.getItem('startValue');
+    //     if(startValueAsString) {
+    //         let newValue = JSON.parse(startValueAsString)
+    //         setStartValue(newValue)//добавили стартовое значение
+    //         setValue(startValue)//startValue  присвоили к value
+    //     }
+    // },[startValue]);// по изменению стартового значения
+    // useEffect(()=>{
+    //     let maxValueAsString = localStorage.getItem('maxValue');
+    //     if(maxValueAsString) {
+    //         let newValue = JSON.parse(maxValueAsString)
+    //         setMaxValue(newValue)//добавили стартовое значение
+    //     }
+    // },[maxValue]);// по изменению стартового значения
 
-    const incHandler = () => {
+    const addValueHandler = () => {
+        if (value >= maxValue) return
         setValue(value + 1);
+    }
+
+    const resetValueHandler = () => {
+        setValue(startValue)
+    }
+
+    const addMaxValue = (value:number) => {
+        localStorage.setItem('maxValue', JSON.stringify(value))//string
+        setMaxValue(value)//добавили стартовое значение
+
+    }// по изменению стартового значения
+
+    const addStartValue = (value:number) => {
+        localStorage.setItem('startValue', JSON.stringify(value));
+        setStartValue(value)//startValue  присвоили к value
+        setValue(value) //присвоили знаение value
     }
 
 
 
+
+
+    const onClickError = (error: string) => {
+        // setError(error)
+    }
+
+
     return (
         <div className="App">
-            <div>
-                <h1>{value}</h1>
-                <button onClick={incHandler}>inc</button>
+            <div className={'counter'}>
+                <CounterValue
+                    addMaxValue={addMaxValue}
+                    addStartValue={addStartValue}
+                    startValue={startValue}
+                    maxValue={maxValue}
+                    onClickError={onClickError}
+                    error={error}
+                />
             </div>
-
-            {/*<div className={'counter'}>*/}
-            {/*    <Counter*/}
-            {/*        count={count}*/}
-            {/*        onClickAddCountHandler={onClickAddCountHandler}*/}
-            {/*        onClickResetCountHandler={onClickResetCountHandler}*/}
-            {/*        minCount={minCount}*/}
-            {/*        maxCount={maxCount}*/}
-            {/*    />*/}
-            {/*</div>*/}
+            <div className={'counter'}>
+                <Counter
+                    error={error}
+                    value={value}
+                    addValueHandler={addValueHandler}
+                    resetValueHandler={resetValueHandler}
+                    startValue={startValue}
+                    maxValue={maxValue}
+                />
+            </div>
         </div>
     );
 }
