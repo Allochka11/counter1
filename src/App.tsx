@@ -39,9 +39,10 @@ function App() {
 
     const addMaxValue = (value: number) => {
         setMessage(null)
+
         if (value >= startValue) {
             localStorage.setItem('maxValue', JSON.stringify(value))//string
-            setMessage("enter values and press 'set3'")
+            setMessage("enter values and press 'set'")
             setMaxValue(value)//добавили стартовое значение
             setError(null)
         } else {
@@ -50,12 +51,12 @@ function App() {
     }
 
     const addStartValue = (value: number) => {
-        if(value <= maxValue) {
-            localStorage.setItem('startValue', JSON.stringify(value));
-            setStartValue(value)
-            setMessage("enter values and press 'set'")
-            setValue(value)
-        }
+
+        localStorage.setItem('startValue', JSON.stringify(value));
+        setStartValue(value)
+        setMessage("enter values and press 'set'")
+        setValue(value)
+
 
     }
     useEffect(() => {
@@ -75,12 +76,12 @@ function App() {
     }, [startValue, maxValue])
 
     const onClickSetStartAndMaxValue = () => {
-        if(!error) {
+        if(value === maxValue) return
+        if (!error) {
             setValue(startValue)
             setMessage(null)
         }
     }
-
 
 
     return (
