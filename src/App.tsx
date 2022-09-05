@@ -13,31 +13,24 @@ function App() {
 
 
     useEffect(() => {
-        console.log('use1')
         if (startValue) {
             setValue(startValue)
         } else {
-            console.log('use2')
-
             let valueAsString = localStorage.getItem('counterValue');
             if (valueAsString) {
                 let newValue = JSON.parse(valueAsString)
                 setValue(newValue)
             }
         }
-
     }, []); // по загрузке
     useEffect(() => {
-        console.log('use3')
         localStorage.setItem('counterValue', JSON.stringify(startValue))
 
     }, [value]);//при изменении value
 
     const addValueHandler = () => {
-
         if (value >= maxValue) return
         setValue(value + 1);
-
     }
 
     const resetValueHandler = () => {
@@ -51,47 +44,42 @@ function App() {
             setMessage("enter values and press 'set3'")
             setMaxValue(value)//добавили стартовое значение
             setError(null)
-
         } else {
-            setError('Incorrect value0')
+            setError('Incorrect value')
         }
     }
 
     const addStartValue = (value: number) => {
-        localStorage.setItem('startValue', JSON.stringify(value));
-        setStartValue(value)
-        setMessage("enter values and press 'set2'")
-        setValue(value)
+        if(value <= maxValue) {
+            localStorage.setItem('startValue', JSON.stringify(value));
+            setStartValue(value)
+            setMessage("enter values and press 'set'")
+            setValue(value)
+        }
+
     }
     useEffect(() => {
-        console.log('use4')
         if (startValue < 0) {
             setMessage(null)
-            setError('Incorrect value1')
+            setError('Incorrect value')
         } else if (startValue >= maxValue) {
             setMessage(null)
-            setError('Incorrect value2')
+            setError('Incorrect value')
         } else if (maxValue <= startValue) {
             setMessage(null)
-            setError('Incorrect value3')
+            setError('Incorrect value')
         } else {
             setError(null)
-            // setMessage("enter values and press 'set1'")
-            // setMessage(null)
         }
-        // setMessage(null)
+
     }, [startValue, maxValue])
 
     const onClickSetStartAndMaxValue = () => {
-        setValue(startValue)
-        setMessage(null)
+        if(!error) {
+            setValue(startValue)
+            setMessage(null)
+        }
     }
-    //
-    // useEffect(()=> {
-    //     console.log('use5')
-    //
-    //     setMessage("enter values and press 'set1'")
-    // },[])
 
 
 

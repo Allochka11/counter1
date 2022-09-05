@@ -14,7 +14,6 @@ type CounterType = {
 
 export const Counter = (props: CounterType) => {
 
-
     const color =
         props.startValue === props.maxValue
     || props.error
@@ -29,8 +28,6 @@ export const Counter = (props: CounterType) => {
     const messageVsError = props.message ? props.message : props.error;
     const disabled= props.startValue < 0 || props.startValue > props.maxValue
 
-
-    // const !props.error ? 'enter value and press "set"' : props.error
 
     return (
         <div>

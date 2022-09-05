@@ -27,16 +27,13 @@ export const CounterValue = (props: CounterValueType) => {
             let newValue = JSON.parse(maxValueAsString)
             props.addMaxValue(newValue)//добавили стартовое значение
         }
-
-    }, [])
+    }, []);
 
 
     const onChangeMaxHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        // let message = "enter values and press 'set2'";
         props.addMaxValue(Number(e.currentTarget.value))
     }
     const onChangeStartHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        // let message = "enter values and press 'set3'";
         props.addStartValue(Number(e.currentTarget.value))
     }
 
@@ -44,16 +41,12 @@ export const CounterValue = (props: CounterValueType) => {
         props.onClickSetStartAndMaxValue();
     }
 
-    // const maxRed =
     const startRed = props.startValue < 0 && `error`;
     const red = props.maxValue === props.startValue
     || props.maxValue < props.startValue ? `error` : null
 
     const disabled = props.maxValue === props.value || !props.message
 
-    //
-    // const error = props.error  && 'error_scoreboard'
-    // const red = props.maxValue === props.startValue || props.maxValue < props.startValue ? error : null
     return (
         <div>
             <div className={`scoreboard_value`}>
