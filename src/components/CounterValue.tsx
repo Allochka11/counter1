@@ -1,52 +1,75 @@
-import React, {ChangeEvent, MouseEventHandler, useEffect} from "react";
+import React, {ChangeEvent, useEffect} from "react";
 import {Button} from "./Button";
 
 
 type CounterValueType = {
-    addMaxValue:(value:number)=>void
-    addStartValue:(value:number)=>void
-    startValue:number
-    maxValue:number
-
-
-
-
-
-    error:string
-    onClickError: (error: string)=>void
+    addMaxValue: (value: number) => void
+    addStartValue: (value: number) => void
+    startValue: number
+    maxValue: number
+    message:string|null
+    error: string | null
+    value: number
+    onClickSetStartAndMaxValue: () => void
 }
 
 export const CounterValue = (props: CounterValueType) => {
 
-    const onChangeMaxHandler = (e:ChangeEvent<HTMLInputElement>) => {
-        props.addMaxValue( Number(e.currentTarget.value))
+    useEffect(() => {
+        let startValueAsString = localStorage.getItem('startValue');
+        if (startValueAsString) {
+            let newValue = JSON.parse(startValueAsString)
+            props.addStartValue(newValue)//добавили стартовое значение
+        }
+
+        let maxValueAsString = localStorage.getItem('maxValue');
+        if (maxValueAsString) {
+            let newValue = JSON.parse(maxValueAsString)
+            props.addMaxValue(newValue)//добавили стартовое значение
+        }
+
+    }, [])
+
+
+    const onChangeMaxHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        // let message = "enter values and press 'set2'";
+        props.addMaxValue(Number(e.currentTarget.value))
     }
-    const onChangeStartHandler = (e:ChangeEvent<HTMLInputElement>) => {
+    const onChangeStartHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        // let message = "enter values and press 'set3'";
         props.addStartValue(Number(e.currentTarget.value))
     }
 
-    console.log(props.startValue)
-    console.log(props.maxValue)
+    const setStartAndMaxValueHandler = () => {
+        props.onClickSetStartAndMaxValue();
+    }
 
+    // const maxRed =
+    const startRed = props.startValue < 0 && `error`;
+    const red = props.maxValue === props.startValue
+    || props.maxValue < props.startValue ? `error` : null
 
+    const disabled = props.maxValue === props.value || !props.message
 
-    const error = props.error !== '' && 'error_scoreboard'
-    return(
+    //
+    // const error = props.error  && 'error_scoreboard'
+    // const red = props.maxValue === props.startValue || props.maxValue < props.startValue ? error : null
+    return (
         <div>
             <div className={`scoreboard_value`}>
-                <div className={`scoreboard__inside ` + error}>
-                    <div>max value: </div>
-                    <input type="number" value={props.maxValue}  onChange={onChangeMaxHandler}/>
+                <div className={`scoreboard__inside ` + red}>
+                    <div>max value:</div>
+                    <input type="number" value={props.maxValue} onChange={onChangeMaxHandler}/>
                 </div>
-                <div className={`scoreboard__inside ` + error}>
-                    <div>start value: </div>
-                    <input type="number" value={props.startValue}  onChange={onChangeStartHandler}/>
+                <div className={`scoreboard__inside ${red ? red : startRed}`}>
+                    <div>start value:</div>
+                    <input type="number" value={props.startValue} onChange={onChangeStartHandler}/>
                 </div>
             </div>
-            <div className={ 'buttons' }>
-                <Button name={'set'} callback={()=>{}}/>
+            <div className={'buttons'}>
+                <Button name={'set'} callback={setStartAndMaxValueHandler} disabled={!!red || !!startRed || disabled}/>
             </div>
-        
+
         </div>
     );
 };

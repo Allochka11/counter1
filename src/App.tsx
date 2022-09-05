@@ -7,64 +7,92 @@ import {CounterValue} from "./components/CounterValue";
 function App() {
     const [value, setValue] = useState<number>(0);
     const [startValue, setStartValue] = useState<number>(0);
-    const [maxValue, setMaxValue] = useState<number>(5);
-    const [error, setError] = useState<string>('');
+    const [maxValue, setMaxValue] = useState<number>(1);
+    const [error, setError] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null)
 
-    useEffect(()=>{
-        let valueAsString = localStorage.getItem('counterValue');
-        if(valueAsString) {
-            let newValue = JSON.parse(valueAsString)
-            setValue(newValue)
+
+    useEffect(() => {
+        console.log('use1')
+        if (startValue) {
+            setValue(startValue)
+        } else {
+            console.log('use2')
+
+            let valueAsString = localStorage.getItem('counterValue');
+            if (valueAsString) {
+                let newValue = JSON.parse(valueAsString)
+                setValue(newValue)
+            }
         }
-    },[]); // по загрузке
-    useEffect(()=>{
-       localStorage.setItem('counterValue', JSON.stringify(value))
-    },[value]);//при изменении value
 
-    // useEffect(()=>{
-    //     let startValueAsString = localStorage.getItem('startValue');
-    //     if(startValueAsString) {
-    //         let newValue = JSON.parse(startValueAsString)
-    //         setStartValue(newValue)//добавили стартовое значение
-    //         setValue(startValue)//startValue  присвоили к value
-    //     }
-    // },[startValue]);// по изменению стартового значения
-    // useEffect(()=>{
-    //     let maxValueAsString = localStorage.getItem('maxValue');
-    //     if(maxValueAsString) {
-    //         let newValue = JSON.parse(maxValueAsString)
-    //         setMaxValue(newValue)//добавили стартовое значение
-    //     }
-    // },[maxValue]);// по изменению стартового значения
+    }, []); // по загрузке
+    useEffect(() => {
+        console.log('use3')
+        localStorage.setItem('counterValue', JSON.stringify(startValue))
+
+    }, [value]);//при изменении value
 
     const addValueHandler = () => {
+
         if (value >= maxValue) return
         setValue(value + 1);
+
     }
 
     const resetValueHandler = () => {
         setValue(startValue)
     }
 
-    const addMaxValue = (value:number) => {
-        localStorage.setItem('maxValue', JSON.stringify(value))//string
-        setMaxValue(value)//добавили стартовое значение
+    const addMaxValue = (value: number) => {
+        setMessage(null)
+        if (value >= startValue) {
+            localStorage.setItem('maxValue', JSON.stringify(value))//string
+            setMessage("enter values and press 'set3'")
+            setMaxValue(value)//добавили стартовое значение
+            setError(null)
 
-    }// по изменению стартового значения
+        } else {
+            setError('Incorrect value0')
+        }
+    }
 
-    const addStartValue = (value:number) => {
+    const addStartValue = (value: number) => {
         localStorage.setItem('startValue', JSON.stringify(value));
-        setStartValue(value)//startValue  присвоили к value
-        setValue(value) //присвоили знаение value
+        setStartValue(value)
+        setMessage("enter values and press 'set2'")
+        setValue(value)
     }
+    useEffect(() => {
+        console.log('use4')
+        if (startValue < 0) {
+            setMessage(null)
+            setError('Incorrect value1')
+        } else if (startValue >= maxValue) {
+            setMessage(null)
+            setError('Incorrect value2')
+        } else if (maxValue <= startValue) {
+            setMessage(null)
+            setError('Incorrect value3')
+        } else {
+            setError(null)
+            // setMessage("enter values and press 'set1'")
+            // setMessage(null)
+        }
+        // setMessage(null)
+    }, [startValue, maxValue])
 
-
-
-
-
-    const onClickError = (error: string) => {
-        // setError(error)
+    const onClickSetStartAndMaxValue = () => {
+        setValue(startValue)
+        setMessage(null)
     }
+    //
+    // useEffect(()=> {
+    //     console.log('use5')
+    //
+    //     setMessage("enter values and press 'set1'")
+    // },[])
+
 
 
     return (
@@ -75,13 +103,16 @@ function App() {
                     addStartValue={addStartValue}
                     startValue={startValue}
                     maxValue={maxValue}
-                    onClickError={onClickError}
+                    message={message}
                     error={error}
+                    value={value}
+                    onClickSetStartAndMaxValue={onClickSetStartAndMaxValue}
                 />
             </div>
             <div className={'counter'}>
                 <Counter
                     error={error}
+                    message={message}
                     value={value}
                     addValueHandler={addValueHandler}
                     resetValueHandler={resetValueHandler}

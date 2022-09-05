@@ -67,7 +67,7 @@ body {
 
 .disabledButton {
   border: none;
-  background-color: #0094b0;
+  background-color: #03697d;
   border-radius: 5px;
   height: 30px;
   width: 60px;
@@ -85,6 +85,10 @@ body {
 }
 
 .error_scoreboard input{
+  background-color: red;
+}
+
+.error input {
   background-color: red;
 }
 
