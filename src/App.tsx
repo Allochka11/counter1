@@ -1,34 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Counter} from "./components/Counter";
-import {Button} from "./components/Button";
 import {CounterValue} from "./components/CounterValue";
 
 function App() {
     const [counterValue, setCounterValue] = useState<number>(0);
     const [startValue, setStartValue] = useState<number>(0);
-    const [maxValue, setMaxValue] = useState<number>(5);
+    const [maxValue, setMaxValue] = useState<number>(10);
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
 
     // по загрузке
     useEffect(() => {
         console.log(1)
-        // setMessage(null);
-        // setError(null);
+        let valueAsString = localStorage.getItem('startValue');
 
-        if (startValue) {
-            setCounterValue(startValue)
-        } else {
-            let valueAsString = localStorage.getItem('startValue');
-            let valueMaxAsString = localStorage.getItem('maxValue');
-            if (valueAsString && valueMaxAsString) {
-                let newValue = JSON.parse(valueAsString)
-                let newMaxValue = JSON.parse(valueMaxAsString)
-                setCounterValue(newValue)
-                setMaxValue(newMaxValue)
-                setStartValue(newValue)
-            }
+        if (valueAsString) {
+            let newValue = JSON.parse(valueAsString)
+            setCounterValue(newValue)
+            setStartValue(newValue)
+        }
+        let valueMaxAsString = localStorage.getItem('maxValue');
+
+        if (valueMaxAsString) {
+            let newMaxValue = JSON.parse(valueMaxAsString)
+            setMaxValue(newMaxValue)
         }
     }, []);
 
@@ -39,104 +35,48 @@ function App() {
     }
 
     const resetValueHandler = () => {
-        setCounterValue(startValue);
-        localStorage.removeItem('maxValue');
+        if (startValue < maxValue) {
+            // localStorage.removeItem('maxValue');
+            setCounterValue(startValue);
+        }
     }
 
-    // const validate = () => {
-        // setMessage("enter values and press 'set'");
-        // setError(null);
-
-        // const isError =
-        //     startValue < 0 ||
-        //     startValue >= maxValue ||
-        //     maxValue <= startValue;
-        //
-        // if (isError) {
-        //     setMessage(null);
-        //     setError('Incorrect value');
-        // }
-    // }
-
     const addMaxValue = (value: number) => {
-        validate();
+        setMessage("enter values and press 'set'");
+        setCounterValue(0)
+        setError(null);
         setMaxValue(value);
 
-
-        if(value <= startValue ) {
+        if (value <= startValue) {
+            console.log(value <= startValue, 'value <= startValue')
+            setError("Incorrect value")
             setMessage(null);
-            setError("Error!!!")
         }
-
-        if(value > startValue) {
-            setMessage("enter values and press 'set'");
-            setError(null)
-        }
-
-        // setMaxValue(value);
-
-        // setMaxValue(value); //добавили стартовое значение
-        // validate();
-        //
-        // // Сделать проверку если валид - добавляем в сторейдж
-        // if (value > startValue) {
-        //     localStorage.setItem('maxValue', JSON.stringify(value))//string
-        // }
     }
 
     const addStartValue = (value: number) => {
-        // validate();
-        setStartValue(value)
 
+        setMessage("enter values and press 'set'");
+        setError(null);
+        setStartValue(value);
+        const isError = value < 0 ||
+            value >= maxValue
 
-        if(value === maxValue || value < 0 ) {
+        if (isError) {
             setMessage(null);
-            setError('Error');
+            setError('Incorrect value');
 
         }
-        if(value >= 0 ) {
-           setMessage("enter values and press 'set'");
-           setError(null)
-        }
-
-
-        // validate();
-        //
-        // setValue(value);
-        // // Сделать проверку если валид - добавляем в сторейдж
-        // if (value < maxValue && value >= 0) {
-        //     localStorage.setItem('startValue', JSON.stringify(value));
-        // }
     }
 
     const onClickSetStartAndMaxValue = () => {
-
-        if(counterValue === maxValue) return
+        if (counterValue === maxValue) return;
         if (!error) {
             setCounterValue(startValue);
             setMessage(null);
             localStorage.setItem('maxValue', JSON.stringify(maxValue));
             localStorage.setItem('startValue', JSON.stringify(startValue));
         }
-    }
-
-    const validate = () => {
-
-        setMessage("enter values and press 'set'");
-        setError(null);
-
-        const isError = startValue < 0 ||
-            maxValue <= startValue||
-            startValue >= maxValue||
-            error;
-
-
-        if(isError){
-
-            setMessage(null);
-            setError('Incorrect value');
-        }
-
     }
 
     return (

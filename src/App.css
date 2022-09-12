@@ -84,9 +84,9 @@ body {
   text-align: center;
 }
 
-.error_scoreboard input{
-  background-color: red;
-}
+/*.error_scoreboard input{*/
+/*  background-color: red;*/
+/*}*/
 
 .error input {
   background-color: red;

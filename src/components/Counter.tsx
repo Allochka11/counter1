@@ -14,13 +14,14 @@ type CounterType = {
 
 export const Counter = (props: CounterType) => {
 
-    const isError = (props.startValue < 0
-        || props.counterValue === props.maxValue
-        || props.maxValue < props.startValue
-        || props.error);
-    const isMaxCounter = props.maxValue === props.counterValue;
+    const isError = (props.startValue < 0);
 
-    const color = isMaxCounter ? 'valueColorMax' : '';
+    const isMaxCounter = props.maxValue === props.counterValue ||
+        props.maxValue < props.startValue ||
+        props.startValue === props.maxValue
+    ;
+
+    const color = isMaxCounter || isError ? 'valueColorMax' : '';
 
     const onClickIncHandler = () => {
         props.addValueHandler();
@@ -34,15 +35,11 @@ export const Counter = (props: CounterType) => {
         !!props.message ||
         props.startValue === props.maxValue;
 
-    console.log(props.message,'message');
-    console.log(props.error, 'error');
     const disabledReset = !!props.message || disabled;
 
     return (
         <div>
-            <div className={`scoreboard ` + `${color}`}>{message ? message : props.counterValue}</div>
-            <div>{props.error}</div>
-
+            <div className={`scoreboard ${color}`}>{message ? message : props.counterValue}</div>
             <div className={'buttons'}>
                 <Button name={'inc'}
                         callback={onClickIncHandler}

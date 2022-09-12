@@ -31,24 +31,27 @@ export const CounterValue = (props: CounterValueType) => {
         setDisabledSet(true)
     }
 
-    const isError = props.startValue < 0 ||
-        props.maxValue === props.startValue ||
-        props.maxValue < props.startValue
-        ? `error` : '';
+    const isErrorStart = props.startValue < 0;
 
-    const disabled = props.startValue < 0 ||
-        !!isError ||
+    const isError =
+        props.maxValue === props.startValue ||
+        props.maxValue < props.startValue;
+
+    const disabled = props.startValue < 0 || isErrorStart || isError ||
         disabledSet;
+
+    const errorStart = isErrorStart ? 'error' : '';
+    const error = isError ? 'error' : '';
 
 
     return (
         <div>
             <div className={`scoreboard_value`}>
-                <div className={`scoreboard__inside `}>
+                <div className={`scoreboard__inside ${error}`}>
                     <div>max value:</div>
                     <input type="number" value={props.maxValue} onChange={onChangeMaxHandler}/>
                 </div>
-                <div className={`scoreboard__inside`}>
+                <div className={`scoreboard__inside ${errorStart} ${error}`}>
                     <div>start value:</div>
                     <input type="number" value={props.startValue} onChange={onChangeStartHandler}/>
                 </div>
