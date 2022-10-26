@@ -65,6 +65,7 @@ function App() {
         }
     }
 
+
     const onClickSetStartAndMaxValue = () => {
         if (counterValue === maxValue) return;
         if (!error) {
