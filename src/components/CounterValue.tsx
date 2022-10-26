@@ -18,9 +18,9 @@ export const CounterValue = (props: CounterValueType) => {
 
     const onChangeMaxHandler = (e: ChangeEvent<HTMLInputElement>) => {
         let maxValue = e.currentTarget.value;
-        if(Number(maxValue) > 1000000) {
-            props.addMaxValue(Number(maxValue.slice(0,5)));
-        }else{
+        if (Number(maxValue) > 1000000) {
+            props.addMaxValue(Number(maxValue.slice(0, 5)));
+        } else {
             props.addMaxValue(Number(maxValue));
         }
         setDisabledSet(false);
@@ -28,9 +28,9 @@ export const CounterValue = (props: CounterValueType) => {
 
     const onChangeStartHandler = (e: ChangeEvent<HTMLInputElement>) => {
         let startValue = e.currentTarget.value;
-        if(Number(startValue) > 1000000) {
-            props.addStartValue(Number(startValue.slice(0,5)));
-        }else{
+        if (Number(startValue) > 1000000) {
+            props.addStartValue(Number(startValue.slice(0, 5)));
+        } else {
             props.addStartValue(Number(startValue));
         }
         setDisabledSet(false);
@@ -53,7 +53,6 @@ export const CounterValue = (props: CounterValueType) => {
     const errorStart = isErrorStart ? 'error' : '';
     const error = isError ? 'error' : '';
 
-
     return (
         <div>
             <div className={`scoreboard_value`}>
@@ -69,7 +68,6 @@ export const CounterValue = (props: CounterValueType) => {
             <div className={'buttons'}>
                 <Button name={'set'} callback={setStartAndMaxValueHandler} disabled={disabled}/>
             </div>
-
         </div>
     );
 };

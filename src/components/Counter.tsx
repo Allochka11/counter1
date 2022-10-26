@@ -35,7 +35,7 @@ export const Counter = (props: CounterType) => {
         !!props.message ||
         props.startValue === props.maxValue;
 
-    const disabledReset = !!props.message || disabled;
+    const disabledReset = !!props.message || disabled || props.maxValue !== props.counterValue;
 
     return (
         <div>
