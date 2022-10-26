@@ -17,12 +17,22 @@ export const CounterValue = (props: CounterValueType) => {
     const [disabledSet, setDisabledSet] = useState(true)
 
     const onChangeMaxHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.addMaxValue(Number(e.currentTarget.value));
+        let maxValue = e.currentTarget.value;
+        if(Number(maxValue) > 1000000) {
+            props.addMaxValue(Number(maxValue.slice(0,5)));
+        }else{
+            props.addMaxValue(Number(maxValue));
+        }
         setDisabledSet(false);
     }
 
     const onChangeStartHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.addStartValue(Number(e.currentTarget.value));
+        let startValue = e.currentTarget.value;
+        if(Number(startValue) > 1000000) {
+            props.addStartValue(Number(startValue.slice(0,5)));
+        }else{
+            props.addStartValue(Number(startValue));
+        }
         setDisabledSet(false);
     }
 
@@ -49,11 +59,11 @@ export const CounterValue = (props: CounterValueType) => {
             <div className={`scoreboard_value`}>
                 <div className={`scoreboard__inside ${error}`}>
                     <div>max value:</div>
-                    <input type="number" value={props.maxValue} onChange={onChangeMaxHandler}/>
+                    <input type="number" value={props.maxValue.toString()} onChange={onChangeMaxHandler}/>
                 </div>
                 <div className={`scoreboard__inside ${errorStart} ${error}`}>
                     <div>start value:</div>
-                    <input type="number" value={props.startValue} onChange={onChangeStartHandler}/>
+                    <input type="number" value={props.startValue.toString()} onChange={onChangeStartHandler}/>
                 </div>
             </div>
             <div className={'buttons'}>

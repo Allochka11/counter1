@@ -12,7 +12,6 @@ function App() {
 
     // по загрузке
     useEffect(() => {
-        console.log(1)
         let valueAsString = localStorage.getItem('startValue');
 
         if (valueAsString) {
@@ -36,7 +35,6 @@ function App() {
 
     const resetValueHandler = () => {
         if (startValue < maxValue) {
-            // localStorage.removeItem('maxValue');
             setCounterValue(startValue);
         }
     }
@@ -47,8 +45,7 @@ function App() {
         setError(null);
         setMaxValue(value);
 
-        if (value <= startValue) {
-            console.log(value <= startValue, 'value <= startValue')
+        if (value <= startValue || startValue < 0) {
             setError("Incorrect value")
             setMessage(null);
         }
@@ -59,8 +56,7 @@ function App() {
         setMessage("enter values and press 'set'");
         setError(null);
         setStartValue(value);
-        const isError = value < 0 ||
-            value >= maxValue
+        const isError = value < 0 || value >= maxValue
 
         if (isError) {
             setMessage(null);
