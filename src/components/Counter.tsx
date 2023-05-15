@@ -25,6 +25,7 @@ export const Counter = (props: CounterType) => {
 
     const onClickIncHandler = () => {
         props.addValueHandler();
+        console.log('+1')
     }
 
     const message = props.error ? props.error : props.message;
