@@ -2,9 +2,8 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Counter} from "./components/Counter";
 import {CounterValue} from "./components/CounterValue";
-import {useDispatch, useSelector} from "react-redux";
-import {AppStateType} from "./bll/store";
-import {incValueAC, setValueFromLocalStorageAC} from "./bll/reducer";
+import {useAppDispatch, useAppSelector} from "./bll/store";
+// import {setValueFromLocalStorageAC, setValueFromLSTK, setValueToLSTK} from "./bll/reducer";
 
 function App() {
     const [counterValue, setCounterValue] = useState<number>(0);
@@ -15,13 +14,13 @@ function App() {
 
     // по загрузке
     useEffect(() => {
+        // dispatch(setValueFromLSTK())
         let valueAsString = localStorage.getItem('startValue');
 
         if (valueAsString) {
             let newValue = JSON.parse(valueAsString)
             setCounterValue(newValue)
             setStartValue(newValue)
-            setValueFromLocalStorageAC(newValue)
         }
         let valueMaxAsString = localStorage.getItem('maxValue');
 
@@ -31,14 +30,17 @@ function App() {
         }
     }, []);
 
-    const value = useSelector<AppStateType,number>(state => state.counter.value)
-    const dispatch = useDispatch();
+    const value = useAppSelector(state => state.counter.value)
+    const startValue1 = useAppSelector(state => state.counter.startValue)
+    const maxValue1 = useAppSelector(state => state.counter.maxValue)
+    const dispatch = useAppDispatch();
 
 
     const addValueHandler = () => {
         if (counterValue >= maxValue) return;
-        dispatch(incValueAC())
-        // setCounterValue(counterValue + 1);
+        // dispatch(incValueAC())
+        // dispatch(setValueToLSTK())
+        setCounterValue(counterValue + 1);
     }
 
     const resetValueHandler = () => {
@@ -86,7 +88,9 @@ function App() {
 
     return (
         <div className="App">
-            {value}
+            <div>current :{value} </div><br/>
+            <div>start: {startValue1}</div><br/>
+            <div>max:{maxValue1}</div><br/>
             <div className={'counter'}>
                 <CounterValue
                     counterValue={counterValue}
