@@ -3,94 +3,76 @@ import './App.css';
 import {Counter} from "./components/Counter";
 import {CounterValue} from "./components/CounterValue";
 import {useAppDispatch, useAppSelector} from "./bll/store";
+import {setCounterValueAC, setMaxValueAC, setStartValueAC} from "./bll/reducer";
+
 // import {setValueFromLocalStorageAC, setValueFromLSTK, setValueToLSTK} from "./bll/reducer";
 
 function App() {
-    const [counterValue, setCounterValue] = useState<number>(0);
-    const [startValue, setStartValue] = useState<number>(0);
-    const [maxValue, setMaxValue] = useState<number>(10);
+    // const [counterValue, setCounterValue] = useState<number>(0);
+    // const [startValue, setStartValue] = useState<number>(0);
+    // const [maxValue, setMaxValue] = useState<number>(10);
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
 
-    // по загрузке
-    useEffect(() => {
-        // dispatch(setValueFromLSTK())
-        let valueAsString = localStorage.getItem('startValue');
-
-        if (valueAsString) {
-            let newValue = JSON.parse(valueAsString)
-            setCounterValue(newValue)
-            setStartValue(newValue)
-        }
-        let valueMaxAsString = localStorage.getItem('maxValue');
-
-        if (valueMaxAsString) {
-            let newMaxValue = JSON.parse(valueMaxAsString)
-            setMaxValue(newMaxValue)
-        }
-    }, []);
-
-    const value = useAppSelector(state => state.counter.value)
-    const startValue1 = useAppSelector(state => state.counter.startValue)
-    const maxValue1 = useAppSelector(state => state.counter.maxValue)
+    // const value = useAppSelector(state => state.counter.value)
+    const counterValue = useAppSelector(state => state.counter.counterValue)
+    const startValue = useAppSelector(state => state.counter.startValue)
+    const maxValue = useAppSelector(state => state.counter.maxValue)
     const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        if (counterValue > startValue) {
+            dispatch(setCounterValueAC(startValue))
+        }
+        // if (startValue < 0)
+    }, [])
 
     const addValueHandler = () => {
         if (counterValue >= maxValue) return;
-        // dispatch(incValueAC())
-        // dispatch(setValueToLSTK())
-        setCounterValue(counterValue + 1);
+        dispatch(setCounterValueAC(counterValue + 1));
     }
 
     const resetValueHandler = () => {
         if (startValue < maxValue) {
-            setCounterValue(startValue);
+            dispatch(setCounterValueAC(startValue));
         }
     }
 
     const addMaxValue = (value: number) => {
+        //??
         setMessage("enter values and press 'set'");
-        setCounterValue(0)
+        dispatch(setCounterValueAC(0));
+
         setError(null);
-        setMaxValue(value);
+        dispatch(setMaxValueAC(value));
 
         if (value <= startValue || startValue < 0) {
-            setError("Incorrect value")
+            setError("Incorrect value");
             setMessage(null);
         }
     }
 
     const addStartValue = (value: number) => {
-
         setMessage("enter values and press 'set'");
         setError(null);
-        setStartValue(value);
-        const isError = value < 0 || value >= maxValue
-
+        dispatch(setStartValueAC(value));
+        const isError = value < 0 || value >= maxValue;
         if (isError) {
             setMessage(null);
             setError('Incorrect value');
-
         }
     }
-
 
     const onClickSetStartAndMaxValue = () => {
         if (counterValue === maxValue) return;
         if (!error) {
-            setCounterValue(startValue);
+            dispatch(setCounterValueAC(startValue));
             setMessage(null);
-            localStorage.setItem('maxValue', JSON.stringify(maxValue));
-            localStorage.setItem('startValue', JSON.stringify(startValue));
         }
     }
 
     return (
         <div className="App">
-            <div>current :{value} </div><br/>
-            <div>start: {startValue1}</div><br/>
-            <div>max:{maxValue1}</div><br/>
             <div className={'counter'}>
                 <CounterValue
                     counterValue={counterValue}
@@ -119,3 +101,4 @@ function App() {
 }
 
 export default App;
+
