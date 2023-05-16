@@ -1,52 +1,63 @@
 import React from "react";
 import {Button} from "./Button";
 import '../App.css'
+import {useAppDispatch, useAppSelector} from "../bll/store";
+import {incValueAC, setCounterValueAC} from "../bll/reducer";
+// import {setCounterValueAC} from "../bll/reducer";
 
 type CounterType = {
-    counterValue: number
     error: string | null
     message: string | null
-    startValue: number
-    maxValue: number
-    addValueHandler: () => void
-    resetValueHandler: () => void
 }
 
 export const Counter = (props: CounterType) => {
+    const counterValue = useAppSelector(state => state.counter.counterValue)
+    const startValue = useAppSelector(state => state.counter.startValue)
+    const maxValue = useAppSelector(state => state.counter.maxValue)
+    const dispatch = useAppDispatch();
 
-    const isError = (props.startValue < 0);
+    //добавляем в счетчик текущее значение counter
+    const addValueHandler = () => {
+        if (counterValue >= maxValue) return;
+        dispatch(incValueAC(counterValue + 1));
+    }
 
-    const isMaxCounter = props.maxValue === props.counterValue ||
-        props.maxValue < props.startValue ||
-        props.startValue === props.maxValue
+    const resetValueHandler = () => {
+        if (startValue < maxValue) {
+            dispatch(setCounterValueAC(startValue));
+        }
+    }
+
+
+    const isError = (startValue < 0);
+
+    const isMaxCounter = maxValue === counterValue ||
+        maxValue < startValue ||
+        startValue === maxValue
     ;
 
     const color = isMaxCounter || isError ? 'valueColorMax' : '';
 
-    const onClickIncHandler = () => {
-        props.addValueHandler();
-        // console.log('+1')
-    }
 
     const message = props.error ? props.error : props.message;
-    const disabled = props.startValue < 0 || props.startValue > props.maxValue || props.startValue === props.maxValue;
+    const disabled = startValue < 0 || startValue > maxValue || startValue === maxValue;
 
     const disabledInc = disabled ||
-        props.counterValue === props.maxValue ||
+        counterValue === maxValue ||
         !!props.message ||
-        props.startValue === props.maxValue;
+        startValue === maxValue;
 
-    const disabledReset = !!props.message || disabled || props.maxValue !== props.counterValue;
+    const disabledReset = !!props.message || disabled || maxValue !== counterValue;
 
     return (
         <div>
-            <div className={`scoreboard ${color}`}>{message ? message : props.counterValue}</div>
+            <div className={`scoreboard ${color}`}>{message ? message : counterValue}</div>
             <div className={'buttons'}>
                 <Button name={'inc'}
-                        callback={onClickIncHandler}
+                        callback={addValueHandler}
                         disabled={disabledInc}/>
                 <Button name={'reset'}
-                        callback={props.resetValueHandler}
+                        callback={resetValueHandler}
                         disabled={disabledReset}/>
             </div>
         </div>

@@ -1,13 +1,8 @@
-let initialState = {
-    counterValue: 0,
-    startValue: 0,
-    maxValue: 1
-}
-
 export type InitialStateType = typeof initialState
-// type IncValueType = {
-//     type: 'INC_VALUE'
-// }
+type IncValueType = {
+    type: 'INC_VALUE',
+    value: number
+}
 
 type SetValueType = {
     type: 'SET_VALUE'
@@ -27,29 +22,40 @@ type SetCounterValueType = {
 }
 
 export type CounterActionsType =
-// IncValueType
+    IncValueType
     | SetValueType
     | SetStartValueType
     | SetMaxValueType
     | SetCounterValueType;
+let initialState = {
+    counterValue: 0,
+    startValue: 0,
+    maxValue: 1,
+    error: false
+}
 export const counterReducer = (state: InitialStateType = initialState, action: CounterActionsType): InitialStateType => {
     switch (action.type) {
-        // case 'INC_VALUE': {
-        //     return {...state, value: state.value + 1}
-        // }
+        case 'INC_VALUE': {
+            if (state.counterValue >= state.maxValue) {
+                return {...state, error: true}
+            } else {
+                return {...state, counterValue: state.counterValue + 1}
+            }
+        }
         // case 'SET_VALUE' : {
         //     return {...state, value: action.value}
         // }
         case 'SET_START_VALUE' : {
-            if (action.startValue >= 0) {
-                return {...state, startValue: action.startValue}
+
+            if (action.startValue >= 0 && action.startValue < state.maxValue) {
+                return {...state, startValue: action.startValue, counterValue: action.startValue}
             } else {
                 return {...state}
             }
 
         }
         case 'SET_MAX_VALUE' : {
-            if (action.maxValue > 0) {
+            if (action.maxValue > 0 && action.maxValue > state.startValue) {
                 return {...state, maxValue: action.maxValue}
             } else {
                 return {...state}
@@ -58,6 +64,10 @@ export const counterReducer = (state: InitialStateType = initialState, action: C
         case "SET_COUNTER_VALUE": {
             return {...state, counterValue: action.counterValue}
         }
+        // case "SET_ERROR" : {
+        //     if(value <= startValue || startValue < 0)
+        // }
+
 
         default:
             return state
@@ -65,7 +75,7 @@ export const counterReducer = (state: InitialStateType = initialState, action: C
 
 }
 
-// export const incValueAC = (): IncValueType => ({type: 'INC_VALUE'} as const);
+export const incValueAC = (value: number): IncValueType => ({type: 'INC_VALUE', value} as const);
 // export const setValueFromLocalStorageAC = (value: number): SetValueType => ({type: 'SET_VALUE', value} as const);
 export const setStartValueAC = (startValue: number): SetStartValueType => ({
     type: 'SET_START_VALUE',
@@ -84,7 +94,7 @@ export const setCounterValueAC = (counterValue: number): SetCounterValueType => 
 
 //thunk
 
-// export const setValueToLSTK = ():AppThunkType=>(dispatch, getState: ()=> AppRootStateType) =>{
+// export const setValueToLSTK = (): AppThunkType => (dispatch, getState: () => AppRootStateType) => {
 //
 //     let currentValue = getState().counter.value
 //     //setStart LS value
