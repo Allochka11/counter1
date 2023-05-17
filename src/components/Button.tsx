@@ -4,7 +4,7 @@ import '../App.css'
 type ButtonType = {
     name: string
     callback: () => void
-    disabled?: true|false
+    disabled?: true | false
 }
 
 export const Button = (props: ButtonType) => {
